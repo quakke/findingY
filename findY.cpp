@@ -31,7 +31,6 @@ int Bmax = 256;
 
 int RGBmax = 256;
 
-//
 // функции-обработчики ползунка
 //
 void myTrackbarRmin(int pos) {
@@ -67,11 +66,9 @@ void myTrackbarBmax(int pos) {
 int main(int argc, char* argv[])
 {
 
-	int x = 0, y = 0;
+    int x = 0, y = 0;
 
-    // имя картинки задаётся первым параметром
     char* filename = argc == 2 ? argv[1] : "D://room.jpg";
-    // получаем картинку
     image = cvLoadImage(filename,1);
 
     printf("[i] image: %s\n", filename);
@@ -142,35 +139,35 @@ int main(int argc, char* argv[])
         cvAnd(r_range, g_range, rgb_and);
         cvAnd(rgb_and, b_range, rgb_and);
 
-		for( int i = 0; i < rgb_and->height/2; i++ )							//  Делю высоту на 2, т.к. мой угол в верхней половине
+	for( int i = 0; i < rgb_and->height/2; i++ )	//  Делю высоту на 2, т.к. мой угол в верхней половине
+	{
+		uchar* ptr = (uchar*) (rgb_and->imageData + i * rgb_and->widthStep); // Получаем указатель на начало строки 'y' 
+		for( int j = 0; j < rgb_and->width/2; j++ )	  // Делю ширину на 2, т.к. мой угол в левой половине
 		{
-			uchar* ptr = (uchar*) (rgb_and->imageData + i * rgb_and->widthStep); // Получаем указатель на начало строки 'y' 
-			for( int j = 0; j < rgb_and->width/2; j++ )							// Делю ширину на 2, т.к. мой угол в левой половине
-			{
-				if (i <= 15)
-					ptr[1*j + 1] = 0;		// Устанваливаем S в 0
-				else 
-					if (ptr[1*j + 1] == 255)
-					{
-						x = j;
-						y = i;
-					}
-			}
+			if (i <= 15)
+				ptr[1*j + 1] = 0;		// Устанваливаем S в 0
+			else 
+				if (ptr[1*j + 1] == 255)
+				{
+					x = j;
+					y = i;
+				}
 		}
+	}
 
         // показываем результат
         cvShowImage( "rgb and", rgb_and );
 
         char c = cvWaitKey(33);
         if (c == 13)		// если нажат Enter - выводим результат
-		{ 
-                break;
+	{ 
+        	break;
         }
     }
         
-	cout << "koordinati x = "<< x << " y = "<< y << endl;
-
-	system("pause");
+    cout << "koordinati x = "<< x << " y = "<< y << endl;
+	
+    system("pause");
 
     // освобождаем ресурсы
     cvReleaseImage(& image);
